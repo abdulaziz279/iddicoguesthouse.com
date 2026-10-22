@@ -1,0 +1,6 @@
+{
+  "name": "Iddico Guest House",
+  "description": "Iddico Guest House in Ghana - serene boutique accommodations, instant online room reservations in Ghana Cedis (GHS), curated local tours, and warm Ghanaian hospitality.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
