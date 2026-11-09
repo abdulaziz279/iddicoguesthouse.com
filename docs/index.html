@@ -15,6 +15,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
     
+    <!-- Production stylesheet fallback for direct static deployments -->
+
     <!-- GitHub Pages Trailing-Slash & SPA Path Normalizer -->
     <script>
       (function() {
@@ -31,17 +33,17 @@
           var decoded = search.slice(2).split('&').map(function(s) { 
             return s.replace(/~and~/g, '&');
           }).join('?');
-          window.history.replaceState(null, null,
-            window.location.pathname.slice(0, -1) + decoded + window.location.hash
-          );
+          var basePath = window.location.pathname.endsWith('/') ? window.location.pathname.slice(0, -1) : window.location.pathname;
+          var newPath = basePath + (decoded.charAt(0) === '/' ? decoded : '/' + decoded) + window.location.hash;
+          window.history.replaceState(null, null, newPath);
         }
       })();
     </script>
 
     <!-- Paystack Africa Payments Integration (Ghana GHS - MoMo & Cards) loaded non-blocking -->
     <script src="https://js.paystack.co/v1/inline.js" async defer></script>
-    <script type="module" crossorigin src="./assets/index-DBqEhPUw.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BXP9z_h-.css">
+    <script type="module" crossorigin src="./assets/index.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index.css">
   </head>
   <body class="bg-stone-900 text-stone-100 antialiased selection:bg-amber-500 selection:text-stone-950">
     <!-- App Root with Initial Branded Loading Skeleton (instant mount replaces this) -->
@@ -57,44 +59,40 @@
       </div>
     </div>
 
-    <!-- Diagnostic and Static Fallback Detector -->
-    <script>
-      // If the page is hosted statically without a bundler running and the React bundle hasn't mounted,
-      // provide a friendly explanation and direct link to the built dist/ version
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          var root = document.getElementById('root');
-          // If root only contains our initial loader after 3.5 seconds
-          if (root && root.querySelector('h1') && root.querySelector('h1').textContent === 'Iddico Guest House' && !document.querySelector('header')) {
-            var isLocalFile = window.location.protocol === 'file:';
-            var isRawGithub = window.location.pathname.indexOf('/src/') !== -1 || window.location.hostname.indexOf('github.io') !== -1;
-            
-            // Check if pre-built dist/index.html is reachable
-            fetch('./dist/index.html', { method: 'HEAD' })
-              .then(function(res) {
-                if (res.ok) {
-                  window.location.replace('./dist/');
-                }
-              })
-              .catch(function() {
-                // If on file:// or static server without build
-                if (isLocalFile) {
-                  var p = root.querySelector('p');
-                  if (p) {
-                    p.innerHTML = '<strong>Notice:</strong> When testing locally, please run <code style="color:#f59e0b;background:#292524;padding:2px 6px;border-radius:4px;">npm run dev</code> or open <code style="color:#f59e0b;background:#292524;padding:2px 6px;border-radius:4px;">dist/index.html</code> directly.';
-                  }
-                }
-              });
-          }
-        }, 3500);
-      });
-    </script>
-
+    <!-- Noscript Fallback -->
     <noscript>
       <div style="font-family: system-ui, -apple-system, sans-serif; padding: 3rem; text-align: center; background: #1c1917; color: #f5f5f4; min-height: 100vh;">
         <h1 style="color: #f59e0b; margin-bottom: 1rem;">Iddico Guest House</h1>
         <p>Please enable JavaScript in your browser to view and reserve rooms at Iddico Guest House.</p>
       </div>
     </noscript>
+
+    <!-- Development entry point for Vite dev server -->
+
+    <!-- Automatic Static Host Fallback for GitHub Pages Root Deployments -->
+    <script>
+      (function() {
+        var isDevServer = window.location.hostname === 'localhost' || 
+                          window.location.hostname === '127.0.0.1' || 
+                          window.location.port === '3000' ||
+                          window.location.hostname.indexOf('run.app') !== -1;
+
+        if (!isDevServer && !document.querySelector('script[src*="assets/index.js"]')) {
+          // Dynamically load the production bundle on static hosts like GitHub Pages
+          var s = document.createElement('script');
+          s.type = 'module';
+          s.crossOrigin = '';
+          s.src = './assets/index.js';
+          s.onerror = function() {
+            var s2 = document.createElement('script');
+            s2.type = 'module';
+            s2.crossOrigin = '';
+            s2.src = './dist/assets/index.js';
+            document.body.appendChild(s2);
+          };
+          document.body.appendChild(s);
+        }
+      })();
+    </script>
   </body>
 </html>

@@ -1,6 +1,6 @@
 node_modules/
-build/
-dist/
+# build/
+# dist/ (tracked so GitHub Pages root, dist, and docs deployments work out of the box)
 coverage/
 .DS_Store
 *.log

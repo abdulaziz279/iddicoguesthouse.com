@@ -29,20 +29,23 @@ npm run preview
 
 ## 🌐 Zero-Blank-Screen GitHub Pages Deployment
 
-This repository is pre-configured with multiple fail-safes to ensure it displays smoothly on **GitHub Pages**, **Netlify**, **Vercel**, or any static host without blank screens:
+This repository is pre-configured with multiple fail-safes so that **any deployment option on GitHub Pages works instantly without remaining stuck on the loading screen**:
 
-### Method 1: Automated GitHub Actions (Recommended)
+### Option 1: Default Root Deployment ("Deploy from a branch -> main -> / (root)")
 1. Push your repository to GitHub.
-2. In your GitHub repository, navigate to **Settings** → **Pages**.
-3. Under **Build and deployment** → **Source**, select **GitHub Actions**.
-4. The workflow in `.github/workflows/deploy.yml` will automatically build and publish the site on every push to `main` or `master`.
+2. In your repository on GitHub, navigate to **Settings** → **Pages**.
+3. Under **Build and deployment** → **Source**, keep the default: **Deploy from a branch**.
+4. Select Branch **main** (or **master**) and folder **/ (root)**.
+5. Click **Save**. The root `index.html` automatically detects static GitHub Pages hosting, loads `./assets/index.js` and `./assets/index.css`, and immediately renders the full interactive application without being stuck on the loader.
 
-### Method 2: Deploy from `/docs` Folder
-1. Run `npm run build:docs` (pre-built in the repository).
-2. In your GitHub repository, go to **Settings** → **Pages**.
-3. Under **Build and deployment** → **Source**, select **Deploy from a branch**.
-4. Set the branch to `main` (or `master`) and select the `/docs` folder.
-5. Click **Save**. Your site will be live within a minute.
+### Option 2: Deploy from `/docs` Folder
+1. In your GitHub repository, go to **Settings** → **Pages**.
+2. Select **Deploy from a branch** → Branch **main** → folder **/docs**.
+3. Click **Save**. The pre-bundled `/docs` folder will serve the app directly.
+
+### Option 3: Automated GitHub Actions CI/CD
+1. In **Settings** → **Pages**, switch **Source** to **GitHub Actions**.
+2. The included `.github/workflows/deploy.yml` workflow will automatically build and publish clean production bundles on every commit.
 
 ---
 
