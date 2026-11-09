@@ -9,14 +9,89 @@
     <meta property="og:description" content="Book affordable boutique rooms in Ghana Cedis. 24/7 front desk, high-speed Wi-Fi, relaxation gardens, and easy online reservation." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23d97706'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-weight='bold' font-size='18' fill='%231c1917'%3EI%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+    
+    <!-- GitHub Pages Trailing-Slash & SPA Path Normalizer -->
+    <script>
+      (function() {
+        // 1. Ensure trailing slash for repository directories on GitHub Pages so relative assets resolve properly
+        var path = window.location.pathname;
+        if (path && !path.endsWith('/') && !path.split('/').pop().includes('.')) {
+          window.location.replace(window.location.protocol + '//' + window.location.host + path + '/' + window.location.search + window.location.hash);
+          return;
+        }
+
+        // 2. Decode SPA redirect query from 404.html if redirected on GitHub Pages
+        var search = window.location.search;
+        if (search && search.indexOf('?/') === 0) {
+          var decoded = search.slice(2).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&');
+          }).join('?');
+          window.history.replaceState(null, null,
+            window.location.pathname.slice(0, -1) + decoded + window.location.hash
+          );
+        }
+      })();
+    </script>
+
     <!-- Paystack Africa Payments Integration (Ghana GHS - MoMo & Cards) loaded non-blocking -->
     <script src="https://js.paystack.co/v1/inline.js" async defer></script>
   </head>
-  <body>
-    <div id="root"></div>
+  <body class="bg-stone-900 text-stone-100 antialiased selection:bg-amber-500 selection:text-stone-950">
+    <!-- App Root with Initial Branded Loading Skeleton (instant mount replaces this) -->
+    <div id="root">
+      <div style="min-height: 100vh; background-color: #1c1917; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: system-ui, -apple-system, sans-serif; color: #f5f5f4; padding: 1.5rem; text-align: center;">
+        <div style="width: 56px; height: 56px; border-radius: 1rem; background: rgba(217, 119, 6, 0.15); border: 1px solid rgba(217, 119, 6, 0.4); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+          <span style="font-size: 24px; font-weight: bold; color: #f59e0b; font-family: serif;">I</span>
+        </div>
+        <h1 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem 0; color: #ffffff;">Iddico Guest House</h1>
+        <p style="font-size: 0.85rem; color: #a8a29e; margin: 0 0 1.25rem 0; max-width: 320px;">Loading boutique accommodations, rooms & booking schedule...</p>
+        <div style="width: 32px; height: 32px; border: 3px solid rgba(217, 119, 6, 0.2); border-top-color: #f59e0b; border-radius: 50%; animation: iddico-spin 0.8s linear infinite;"></div>
+        <style>
+          @keyframes iddico-spin {
+            to { transform: rotate(360deg); }
+          }
+        </style>
+      </div>
+    </div>
+
+    <!-- Diagnostic and Static Fallback Detector -->
+    <script>
+      // If the page is hosted statically without a bundler running and the React bundle hasn't mounted,
+      // provide a friendly explanation and direct link to the built dist/ version
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          var root = document.getElementById('root');
+          // If root only contains our initial loader after 3.5 seconds
+          if (root && root.querySelector('h1') && root.querySelector('h1').textContent === 'Iddico Guest House' && !document.querySelector('header')) {
+            var isLocalFile = window.location.protocol === 'file:';
+            var isRawGithub = window.location.pathname.indexOf('/src/') !== -1 || window.location.hostname.indexOf('github.io') !== -1;
+            
+            // Check if pre-built dist/index.html is reachable
+            fetch('./dist/index.html', { method: 'HEAD' })
+              .then(function(res) {
+                if (res.ok) {
+                  window.location.replace('./dist/');
+                }
+              })
+              .catch(function() {
+                // If on file:// or static server without build
+                if (isLocalFile) {
+                  var p = root.querySelector('p');
+                  if (p) {
+                    p.innerHTML = '<strong>Notice:</strong> When testing locally, please run <code style="color:#f59e0b;background:#292524;padding:2px 6px;border-radius:4px;">npm run dev</code> or open <code style="color:#f59e0b;background:#292524;padding:2px 6px;border-radius:4px;">dist/index.html</code> directly.';
+                  }
+                }
+              });
+          }
+        }, 3500);
+      });
+    </script>
+
     <noscript>
       <div style="font-family: system-ui, -apple-system, sans-serif; padding: 3rem; text-align: center; background: #1c1917; color: #f5f5f4; min-height: 100vh;">
         <h1 style="color: #f59e0b; margin-bottom: 1rem;">Iddico Guest House</h1>

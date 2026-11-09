@@ -30,9 +30,11 @@ export class ErrorBoundary extends Component<Props, State> {
 
   private handleReset = () => {
     try {
+      localStorage.removeItem('iddico_prod_rooms_v5');
       localStorage.removeItem('iddico_prod_rooms_v4');
       localStorage.removeItem('iddico_prod_bookings_v4');
       localStorage.removeItem('iddico_prod_reviews_v4');
+      sessionStorage.removeItem('iddico_admin_auth_session');
     } catch {
       // ignore
     }
