@@ -37,7 +37,7 @@ export interface BookingSubmission {
   paymentPhone?: string;
   paystackReference?: string;
   specialRequests?: string;
-  status: 'confirmed' | 'pending_arrival';
+  status: 'confirmed' | 'pending_arrival' | 'checked_in' | 'completed' | 'cancelled';
   createdAt: string;
 }
 

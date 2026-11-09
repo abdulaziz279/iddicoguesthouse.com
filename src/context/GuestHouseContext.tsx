@@ -21,6 +21,12 @@ interface GuestHouseContextType {
   setSearchQuery: (query: string) => void;
   filterGuests: number;
   setFilterGuests: (count: number) => void;
+  isAdminOpen: boolean;
+  setIsAdminOpen: (open: boolean) => void;
+  updateBookingStatus: (bookingId: string, status: BookingSubmission['status']) => void;
+  deleteBooking: (bookingId: string) => void;
+  clearAllBookings: () => void;
+  addSampleBooking: () => void;
 }
 
 const GuestHouseContext = createContext<GuestHouseContextType | undefined>(undefined);
@@ -63,6 +69,7 @@ export const GuestHouseProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [selectedRoomForBooking, setSelectedRoomForBooking] = useState<Room | null>(null);
   const [isCalendarManagerOpen, setIsCalendarManagerOpen] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [activeFilterAmenity, setActiveFilterAmenity] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterGuests, setFilterGuests] = useState(1);
@@ -151,6 +158,87 @@ export const GuestHouseProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setReviews(prev => [newReview, ...prev]);
   };
 
+  const updateBookingStatus = (bookingId: string, status: BookingSubmission['status']) => {
+    setBookings(prev =>
+      prev.map(b => (b.id === bookingId ? { ...b, status } : b))
+    );
+  };
+
+  const deleteBooking = (bookingId: string) => {
+    const bookingToDelete = bookings.find(b => b.id === bookingId);
+    if (bookingToDelete) {
+      const datesToRemove: string[] = [];
+      const start = new Date(bookingToDelete.checkIn);
+      const end = new Date(bookingToDelete.checkOut);
+      const cur = new Date(start);
+      while (cur < end) {
+        datesToRemove.push(cur.toISOString().split('T')[0]);
+        cur.setDate(cur.getDate() + 1);
+      }
+      setRooms(prev =>
+        prev.map(r => {
+          if (r.id === bookingToDelete.roomId) {
+            return {
+              ...r,
+              bookedDates: r.bookedDates.filter(d => !datesToRemove.includes(d))
+            };
+          }
+          return r;
+        })
+      );
+    }
+    setBookings(prev => prev.filter(b => b.id !== bookingId));
+  };
+
+  const clearAllBookings = () => {
+    setBookings([]);
+    setRooms(prev => prev.map(r => ({ ...r, bookedDates: [] })));
+  };
+
+  const addSampleBooking = () => {
+    const sampleGuests = [
+      { name: 'Dr. Kwame Boateng', phone: '+233 24 880 5934', email: 'kwame.b@example.com' },
+      { name: 'Akosua Mensah', phone: '+233 24 880 5934', email: 'akosua.m@example.com' },
+      { name: 'Emmanuel Osei', phone: '+233 24 880 5934', email: 'e.osei@example.com' },
+      { name: 'Abena Frimpong', phone: '+233 24 880 5934', email: 'abena.f@example.com' }
+    ];
+    const pickedGuest = sampleGuests[Math.floor(Math.random() * sampleGuests.length)];
+    const isStandard = Math.random() > 0.5;
+    const room = isStandard ? rooms[0] : rooms[1];
+    
+    // Future date within next 14 days
+    const today = new Date();
+    const dayOffset = Math.floor(Math.random() * 10) + 1;
+    const checkIn = new Date(today);
+    checkIn.setDate(today.getDate() + dayOffset);
+    const checkOut = new Date(checkIn);
+    checkOut.setDate(checkIn.getDate() + 2);
+    const inStr = checkIn.toISOString().split('T')[0];
+    const outStr = checkOut.toISOString().split('T')[0];
+
+    const methods: Array<BookingSubmission['paymentMethod']> = ['paystack', 'momo_mtn', 'pay_on_arrival'];
+    const method = methods[Math.floor(Math.random() * methods.length)];
+
+    createBooking({
+      roomId: room.id,
+      roomName: room.name,
+      roomPrice: room.priceGhs,
+      guestName: pickedGuest.name,
+      guestPhone: pickedGuest.phone,
+      guestEmail: pickedGuest.email,
+      checkIn: inStr,
+      checkOut: outStr,
+      nights: 2,
+      guestsCount: isStandard ? 2 : 3,
+      totalGhs: room.priceGhs * 2,
+      paymentMethod: method,
+      paymentPhone: method === 'momo_mtn' ? '+233 24 880 5934' : undefined,
+      paystackReference: method === 'paystack' ? `IDD-PSTK-${Math.floor(100000 + Math.random() * 900000)}` : undefined,
+      specialRequests: 'Quiet room requested and standby generator backup appreciated.',
+      status: method === 'pay_on_arrival' ? 'pending_arrival' : 'confirmed'
+    });
+  };
+
   return (
     <GuestHouseContext.Provider
       value={{
@@ -171,7 +259,13 @@ export const GuestHouseProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         searchQuery,
         setSearchQuery,
         filterGuests,
-        setFilterGuests
+        setFilterGuests,
+        isAdminOpen,
+        setIsAdminOpen,
+        updateBookingStatus,
+        deleteBooking,
+        clearAllBookings,
+        addSampleBooking
       }}
     >
       {children}

@@ -13,6 +13,7 @@ import { WelcomeModal } from './components/WelcomeModal';
 import { BookingModal } from './components/BookingModal';
 import { ReservationsCalendarView } from './components/ReservationsCalendarView';
 import { TermsAndConditionsModal } from './components/TermsAndConditionsModal';
+import { AdminPortalModal } from './components/AdminPortalModal';
 import { Room } from './types/guestHouse';
 
 function MainAppContent() {
@@ -105,6 +106,9 @@ function MainAppContent() {
 
       {/* Terms & Conditions Modal to Ensure Legal Compliance */}
       <TermsAndConditionsModal />
+
+      {/* Staff & Management Password-Protected Admin Portal (Online Bookings Ledger) */}
+      <AdminPortalModal />
 
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Calendar, Phone, Menu, X, Sparkles, Image, Compass, MessageSquare, ShieldCheck, MapPin } from 'lucide-react';
+import { Home, Calendar, Phone, Menu, X, Sparkles, Image, Compass, MessageSquare, ShieldCheck, MapPin, Lock } from 'lucide-react';
 import { useGuestHouse } from '../context/GuestHouseContext';
 
 interface NavbarProps {
@@ -7,7 +7,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onScrollTo }) => {
-  const { rooms, setIsCalendarManagerOpen } = useGuestHouse();
+  const { rooms, setIsCalendarManagerOpen, setIsAdminOpen } = useGuestHouse();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -109,7 +109,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollTo }) => {
           </nav>
 
           {/* Quick Action Buttons */}
-          <div className="hidden sm:flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2.5">
+            <button
+              onClick={() => setIsAdminOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-stone-800 hover:bg-stone-700 text-amber-300 border border-amber-600/40 hover:border-amber-500 transition-all cursor-pointer shadow-xs"
+              title="Staff & Management: Online Bookings Ledger (Password Protected)"
+            >
+              <Lock className="w-3.5 h-3.5 text-amber-400" />
+              <span>Admin</span>
+            </button>
+
             <button
               onClick={() => setIsCalendarManagerOpen(true)}
               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700 transition-colors cursor-pointer"
@@ -139,8 +148,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollTo }) => {
             </button>
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Menu Toggle & Admin Quick Access */}
           <div className="flex items-center gap-2 lg:hidden">
+            <button
+              onClick={() => setIsAdminOpen(true)}
+              className="p-2 rounded-lg bg-stone-800 text-amber-300 hover:bg-stone-700 border border-amber-600/40"
+              title="Staff Admin Portal"
+              aria-label="Staff Admin Portal"
+            >
+              <Lock className="w-4 h-4" />
+            </button>
             <button
               onClick={() => setIsCalendarManagerOpen(true)}
               className="p-2 rounded-lg bg-stone-800 text-amber-400 hover:bg-stone-700"
@@ -232,6 +249,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollTo }) => {
               >
                 <MapPin className="w-4 h-4 text-amber-400" />
                 <span>Contact Info & Google Maps</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsAdminOpen(true);
+                }}
+                className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-stone-800/90 hover:bg-stone-800 text-amber-300 font-semibold border border-amber-600/40 text-left cursor-pointer mt-1"
+              >
+                <Lock className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Admin Bookings Ledger (Protected)</span>
               </button>
             </div>
 

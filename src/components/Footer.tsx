@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Phone, Mail, MapPin, Calendar, Heart, ShieldCheck, 
-  ExternalLink, Sparkles, MessageCircle, ArrowUp
+  ExternalLink, Sparkles, MessageCircle, ArrowUp, Lock
 } from 'lucide-react';
 import { useGuestHouse } from '../context/GuestHouseContext';
 import { Room } from '../types/guestHouse';
@@ -12,7 +12,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onScrollTo, onOpenBooking }) => {
-  const { rooms, setIsTermsOpen, setIsCalendarManagerOpen } = useGuestHouse();
+  const { rooms, setIsTermsOpen, setIsCalendarManagerOpen, setIsAdminOpen } = useGuestHouse();
 
   const standardRoom = rooms.find(r => r.id === 'standard-haven') || rooms[0];
   const deluxeRoom = rooms.find(r => r.id === 'deluxe-suite') || rooms[1];
@@ -247,6 +247,15 @@ export const Footer: React.FC<FooterProps> = ({ onScrollTo, onOpenBooking }) => 
                   Guest Reviews
                 </button>
               </li>
+              <li className="pt-1">
+                <button 
+                  onClick={() => setIsAdminOpen(true)} 
+                  className="hover:text-amber-400 transition-colors cursor-pointer text-amber-300 font-semibold flex items-center gap-1.5"
+                >
+                  <Lock className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Admin Bookings Ledger</span>
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -333,8 +342,16 @@ export const Footer: React.FC<FooterProps> = ({ onScrollTo, onOpenBooking }) => 
 
         {/* Bottom Copyright & Akwaaba Tag */}
         <div className="pt-8 border-t border-stone-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-stone-500">
-          <div>
-            © {new Date().getFullYear()} Iddico Guest House. All rights reserved. Registered in Ghana.
+          <div className="flex flex-wrap items-center gap-3">
+            <span>© {new Date().getFullYear()} Iddico Guest House. All rights reserved. Registered in Ghana.</span>
+            <span className="text-stone-700 hidden sm:inline">|</span>
+            <button
+              onClick={() => setIsAdminOpen(true)}
+              className="inline-flex items-center gap-1 text-stone-400 hover:text-amber-300 transition-colors cursor-pointer"
+            >
+              <Lock className="w-3 h-3 text-amber-400" />
+              <span>Staff Admin Portal (Protected)</span>
+            </button>
           </div>
           <div className="flex items-center gap-2 text-amber-400/80">
             <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" />
